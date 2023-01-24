@@ -2,6 +2,8 @@ const router = require("express").Router();
 // const mongoose = require('mongoose');
  
 const Cart = require('../models/Cart.model');
+const User = require('../models/User.model');
+const Product = require('../models/Product.model');
  
 //  POST /api/cart  -  Creates a new cart
 router.post('/', (req, res, next) => {

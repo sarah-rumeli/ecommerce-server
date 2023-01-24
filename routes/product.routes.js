@@ -8,7 +8,7 @@ const Category = require('../models/Category.model');
 router.post('/', (req, res, next) => {
   const { name, description, img, price, categoryId } = req.body;
  
-  Product.create({ name, description, img, price, categoryId: [] })
+  Product.create({ name, description, img, price, category: categoryId })
     .then(response => res.json(response))
     .catch(err => res.status(200).json(err));
 });
