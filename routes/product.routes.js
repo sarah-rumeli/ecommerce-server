@@ -15,7 +15,7 @@ router.post('/', isAuthenticated, (req, res, next) => {
 
 // GET /api/products -  Retrieves all of the products
 router.get('/', (req, res, next) => {
-    Product.find()
+    Product.find().sort({createdAt:-1})
       .then(allProducts => res.json(allProducts))
       .catch(err => res.status(200).json(err));
 });
