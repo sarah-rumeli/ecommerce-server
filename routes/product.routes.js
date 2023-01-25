@@ -5,9 +5,9 @@ const Product = require('../models/Product.model');
  
 //  POST /api/products  -  Creates a new product // don't forget to add functionality for adding multiple categories
 router.post('/', (req, res, next) => {
-  const { name, description, img, price, categoryId } = req.body;
+  const { name, description, img, price, category } = req.body;
  
-  Product.create({ name, description, img, price, category: categoryId })
+  Product.create({ name, description, img, price, category })
     .then(response => res.json(response))
     .catch(err => res.status(200).json(err));
 });
@@ -15,7 +15,6 @@ router.post('/', (req, res, next) => {
 // GET /api/products -  Retrieves all of the products
 router.get('/', (req, res, next) => {
     Product.find()
-      .populate('category')
       .then(allProducts => res.json(allProducts))
       .catch(err => res.status(200).json(err));
 });
@@ -29,10 +28,7 @@ router.get('/:productId', (req, res, next) => {
       return;
     }
    
-    // Each Products document has a `category` array holding `_id`s of Categories
-    // We use .populate() method to get swap the `_id`s for the actual Categories
     Product.findById(productId)
-      .populate('category')
       .then(product => res.status(200).json(product))
       .catch(error => res.status(200).json(error));
 });
