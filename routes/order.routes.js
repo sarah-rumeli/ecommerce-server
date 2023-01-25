@@ -6,23 +6,21 @@ const Product = require('../models/Product.model');
 const User = require('../models/User.model');
 const Order = require('../models/Order.model');
 
-// GET /api/orders - Get all products
-
-// POST /api/orders  -  Creates a new order // don't forget to add functionality for adding multiple products
+// POST /api/orders - Creates a new order // don't forget to add functionality for adding multiple products
 router.post('/', (req, res, next) => {
-  const { notes, status, orderDate, productIdArr } = req.body;
-  const userId = req.session.currentUser;
+  const { user, products, notes, status, orderDate } = req.body;
+  //const userId = req.session.currentUser;
  
-  Order.create({ notes, status, orderDate, user, categoryId: [] })
+  Order.create({ user, products, notes, status, orderDate })
     .then(response => res.json(response))
     .catch(err => res.status(200).json(err));
 });
 
-// GET /api/products -  Retrieves all of the products
+// GET /api/order - Retrieves all of the orders (has to be Admin! *** to implement ***)
 router.get('/', (req, res, next) => {
-    Product.find()
-      .populate('category')
-      .then(allProducts => res.json(allProducts))
+    Order.find()
+      .populate('products')
+      .then(allOrders => res.json(allOrders))
       .catch(err => res.status(200).json(err));
 });
 

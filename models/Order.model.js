@@ -4,7 +4,7 @@ const orderSchema = new Schema(
     {
       user: { type: Schema.Types.ObjectId, ref: 'User' },
       products: [{ 
-        productId: {type: Schema.Types.ObjectId, ref: 'Product'},
+        _id: {type: Schema.Types.ObjectId, ref: 'Product'},
         name: String,
         quantity: {
           type: Number,
@@ -12,7 +12,7 @@ const orderSchema = new Schema(
           min: [1, 'Quantity cannot be less than 1.']
         }
       }],
-      totalPrice,
+      totalPrice: { type: Number, default: 0 },
       notes: {
         type: String,
       },
