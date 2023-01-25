@@ -3,7 +3,16 @@ const { Schema, model } = require("mongoose");
 const orderSchema = new Schema(
     {
       user: { type: Schema.Types.ObjectId, ref: 'User' },
-      product: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
+      products: [{ 
+        productId: {type: Schema.Types.ObjectId, ref: 'Product'},
+        name: String,
+        quantity: {
+          type: Number,
+          required: true,
+          min: [1, 'Quantity cannot be less than 1.']
+        },
+        price: Number
+      }],
       notes: {
         type: String,
       },
