@@ -15,11 +15,11 @@ const productSchema = new Schema(
         type: Number,
         required: [true, "Price is required."],
       },
-      category: [{ 
-        type: Schema.Types.ObjectId,
-        ref: 'Category',
+      category: {
+        type: String,
+        enum: ['OrganicProducts', 'ReclaimedTextiles', 'RefurbishedElectronics', 'WaterConservation ', 'EcoFertilizers'],
         required: [true, "Please select at least one category"],
-      }],
+      }
     },
     {
       // this second object adds extra properties: `createdAt` and `updatedAt`
