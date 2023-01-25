@@ -2,9 +2,10 @@ const router = require("express").Router();
 const mongoose = require('mongoose');
  
 const Product = require('../models/Product.model');
+const { isAuthenticated } = require("../middleware/jwt.middleware");
  
-//  POST /api/products  -  Creates a new product // don't forget to add functionality for adding multiple categories
-router.post('/', (req, res, next) => {
+//  POST /api/products  -  Creates a new product
+router.post('/', isAuthenticated, (req, res, next) => {
   const { name, description, img, price, category } = req.body;
  
   Product.create({ name, description, img, price, category })
@@ -34,7 +35,7 @@ router.get('/:productId', (req, res, next) => {
 });
 
 // PUT  /api/products/:productId  -  Updates a specific product by id
-router.put('/:productId', (req, res, next) => {
+router.put('/:productId', isAuthenticated, (req, res, next) => {
     const { productId } = req.params;
    
     if (!mongoose.Types.ObjectId.isValid(productId)) {
@@ -48,7 +49,7 @@ router.put('/:productId', (req, res, next) => {
 });
 
 // DELETE  /api/products/:productId  -  Deletes a specific product by id
-router.delete('/:productId', (req, res, next) => {
+router.delete('/:productId', isAuthenticated, (req, res, next) => {
     const { productId } = req.params;
     
     if (!mongoose.Types.ObjectId.isValid(productId)) {

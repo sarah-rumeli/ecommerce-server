@@ -1,12 +1,11 @@
 const router = require("express").Router();
- 
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
  
 const Product = require('../models/Product.model');
 const User = require('../models/User.model');
 const Order = require('../models/Order.model');
 
-// POST /api/orders - Creates a new order // don't forget to add functionality for adding multiple products
+// POST /api/orders - Creates a new order
 router.post('/', (req, res, next) => {
   const { user, products, notes, status, orderDate } = req.body;
   //const userId = req.session.currentUser;
@@ -16,7 +15,7 @@ router.post('/', (req, res, next) => {
     .catch(err => res.status(200).json(err));
 });
 
-// GET /api/order - Retrieves all of the orders (has to be Admin! *** to implement ***)
+// GET /api/orders - Retrieves all of the orders (has to be Admin! *** to implement ***)
 router.get('/', (req, res, next) => {
     Order.find()
       .populate('products')
@@ -24,48 +23,53 @@ router.get('/', (req, res, next) => {
       .catch(err => res.status(200).json(err));
 });
 
-//  GET /api/products/:productId -  Retrieves a specific product by id
-router.get('/:productId', (req, res, next) => {
-    const { productId } = req.params;
+//  GET /api/orders/:orderId -  Retrieves a specific order by id
+// *** Only show orders that that USER created
+// *** Admin can view any order by id
+router.get('/:orderId', (req, res, next) => {
+    const { orderId } = req.params;
    
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
       res.status(400).json({ message: 'Specified id is not valid' });
       return;
     }
    
-    // Each Products document has a `category` array holding `_id`s of Categories
-    // We use .populate() method to get swap the `_id`s for the actual Categories
-    Product.findById(productId)
-      .populate('category')
-      .then(product => res.status(200).json(product))
+    // Each Order document has a `product` array holding `_id`s of Products
+    // We use .populate() method to get swap the `_id`s for the actual Products
+    Order.findById(orderId)
+      .populate('products')
+      .then(order => res.status(200).json(order))
       .catch(error => res.status(200).json(error));
 });
 
-// PUT  /api/products/:productId  -  Updates a specific product by id
-router.put('/projects/:productId', (req, res, next) => {
-    const { productId } = req.params;
+// PUT  /api/orders/:orderId - Updates a specific order by id
+// *** Only update orders that that USER created
+// *** Admin can update any order
+router.put('/:orderId', (req, res, next) => {
+    const { orderId } = req.params;
    
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
       res.status(400).json({ message: 'Specified id is not valid' });
       return;
     }
    
-    Product.findByIdAndUpdate(productId, req.body, { new: true })
-      .then((updatedProduct) => res.json(updatedProduct))
+    Order.findByIdAndUpdate(orderId, req.body, { new: true })
+      .then((updatedOrder) => res.json(updatedOrder))
       .catch(error => res.status(200).json(error));
 });
 
-// DELETE  /api/products/:productId  -  Deletes a specific project by id
-router.delete('/:productId', (req, res, next) => {
-    const { productId } = req.params;
+// DELETE  /api/orders/:orderId - Deletes a specific Order by id
+// *** Only Admin can delete orders
+router.delete('/:orderId', (req, res, next) => {
+    const { orderId } = req.params;
     
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
       res.status(400).json({ message: 'Specified id is not valid' });
       return;
     }
    
-    Product.findByIdAndRemove(productId)
-      .then(() => res.json({ message: `Product with ${productId} is removed successfully.` }))
+    Order.findByIdAndRemove(orderId)
+      .then(() => res.json({ message: `Order with ${orderId} is removed successfully.` }))
       .catch(error => res.status(200).json(error));
 });
  
