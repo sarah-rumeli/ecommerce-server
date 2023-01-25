@@ -2,7 +2,6 @@ const router = require("express").Router();
 const mongoose = require('mongoose');
  
 const Product = require('../models/Product.model');
-const Category = require('../models/Category.model');
  
 //  POST /api/products  -  Creates a new product // don't forget to add functionality for adding multiple categories
 router.post('/', (req, res, next) => {
