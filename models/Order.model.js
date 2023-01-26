@@ -8,7 +8,7 @@ const orderSchema = new Schema(
         name: String,
         quantity: {
           type: Number,
-          required: true,
+          default: "1",
           min: [1, 'Quantity cannot be less than 1.']
         }
       }],

@@ -23,9 +23,9 @@ router.get('/:productId', (req, res, next) => {
 
 // POST /api/orders - Creates a new order
 router.post('/', (req, res, next) => {
-  const { user, products, notes, status, orderDate } = req.body;
- 
-  Order.create({ user, products, notes, status, orderDate })
+  const { userId, products, totalPrice, notes, status, orderDate } = req.body;
+  //console.log(req.body);
+  Order.create({ userId, products, totalPrice, notes, status, orderDate })
     .then(response => res.json(response))
     .catch(err => res.status(200).json(err));
 });
