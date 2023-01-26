@@ -36,7 +36,7 @@ router.post("/", async (req, res, next) => {
     if (cart) {
       // if the user has a cart already
       // check if the product is in the cart
-      console.log("cart.products: ", cart.products);
+      //console.log("cart.products: ", cart.products);
       let productIndex = cart.products.findIndex((p) => p._id == productId);
 
       // Check if product exists in the cart
@@ -68,9 +68,28 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-// DELETE - Removes product from users' cart
+// DELETE /api/cart/:productId - Removes product from users' cart
 router.delete('/:productId', (req, res, next) => {
-
+  const { productId } = req.params;
+  const { userId } = req.body;
+    
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      res.status(400).json({ message: 'Specified id is not valid' });
+      return;
+    }
+   
+    Cart.findOne({user: userId})
+      .then((cart) => {
+        let productIndex = cart.products.findIndex(p => p._id == productId);
+        if (productIndex > -1) {
+            let productItem = cart.products[productIndex];
+            cart.total -= productItem.quantity*productItem.price;
+            cart.products.splice(productIndex,1);
+        }
+        cart = cart.save();
+        return res.status(200).json({ message: `Product with ${productId} removed from cart successfully.` });
+      })
+      .catch(error => res.status(200).json(error));
 });
  
 module.exports = router;
