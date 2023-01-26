@@ -10,7 +10,8 @@ const orderSchema = new Schema(
           type: Number,
           default: "1",
           min: [1, 'Quantity cannot be less than 1.']
-        }
+        },
+        price: Number
       }],
       totalPrice: { type: Number, default: 0 },
       notes: {

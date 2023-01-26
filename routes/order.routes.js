@@ -18,7 +18,7 @@ router.get('/:productId', (req, res, next) => {
       //console.log(product.name);
       res.status(200).json(product)
     })
-    .catch(err => res.status(200).json(err));
+    .catch(error => res.status(500).json(error));
 });
 
 // POST /api/orders - Creates a new order
@@ -26,16 +26,16 @@ router.post('/', (req, res, next) => {
   const { userId, products, totalPrice, notes, status, orderDate } = req.body;
   //console.log(req.body);
   Order.create({ userId, products, totalPrice, notes, status, orderDate })
-    .then(response => res.json(response))
-    .catch(err => res.status(200).json(err));
+    .then(response => res.status(200).json(response))
+    .catch(error => res.status(500).json(error));
 });
 
 // GET /api/orders - Retrieves all of the orders (has to be Admin! *** to implement ***)
 router.get('/', (req, res, next) => {
     Order.find().sort({orderDate:-1})
       .populate('products')
-      .then(allOrders => res.json(allOrders))
-      .catch(err => res.status(200).json(err));
+      .then(allOrders => res.status(200).json(allOrders))
+      .catch(error => res.status(500).json(error));
 });
 
 //  GET /api/orders/:orderId -  Retrieves a specific order by id
@@ -54,7 +54,7 @@ router.get('/:orderId', (req, res, next) => {
     Order.findById(orderId)
       .populate('products')
       .then(order => res.status(200).json(order))
-      .catch(error => res.status(200).json(error));
+      .catch(error => res.status(500).json(error));
 });
 
 // PUT  /api/orders/:orderId - Updates a specific order by id
@@ -69,8 +69,8 @@ router.put('/:orderId', (req, res, next) => {
     }
    
     Order.findByIdAndUpdate(orderId, req.body, { new: true })
-      .then((updatedOrder) => res.json(updatedOrder))
-      .catch(error => res.status(200).json(error));
+      .then((updatedOrder) => res.status(200).json(updatedOrder))
+      .catch(error => res.status(500).json(error));
 });
 
 // DELETE  /api/orders/:orderId - Deletes a specific Order by id
@@ -84,8 +84,8 @@ router.delete('/:orderId', (req, res, next) => {
     }
    
     Order.findByIdAndRemove(orderId)
-      .then(() => res.json({ message: `Order with ${orderId} is removed successfully.` }))
-      .catch(error => res.status(200).json(error));
+      .then(() => res.status(200).json({ message: `Order with ${orderId} is removed successfully.` }))
+      .catch(error => res.status(500).json(error));
 });
  
 module.exports = router;
