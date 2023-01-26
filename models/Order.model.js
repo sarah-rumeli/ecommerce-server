@@ -19,9 +19,8 @@ const orderSchema = new Schema(
       },
       status: {
         type: String,
-        enum: ['inCart', 'unPaid', 'receivedPayment', 'dispatched', 'delivered']
+        enum: ['unPaid', 'receivedPayment', 'dispatched', 'delivered']
       },
-      orderDate: Date,
       dispatchDate: Date,
     },
     {
