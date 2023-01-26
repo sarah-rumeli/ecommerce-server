@@ -128,4 +128,19 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
   res.status(200).json(req.payload);
 });
 
+
+//get USER Profile info
+router.get("/profile/:profileId",(req,res,next)=>{
+
+  const { profileId } = req.params;
+  console.log("Profile ID......",profileId);
+  User.findById(profileId)
+  .then(profile => res.status(200).json(profile))
+  .catch(error => res.status(200).json(error));
+
+
+})
+
+
+
 module.exports = router;
