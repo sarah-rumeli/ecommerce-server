@@ -19,7 +19,8 @@ const productSchema = new Schema(
         type: String,
         enum: ['Organic Products', 'Reclaimed Textiles', 'Refurbished Electronics', 'Water Conservation', 'Eco Fertilizers'],
         required: [true, "Please select at least one category"],
-      }
+      },
+      user:{type: Schema.Types.ObjectId, ref: 'User'}
     },
     {
       // this second object adds extra properties: `createdAt` and `updatedAt`

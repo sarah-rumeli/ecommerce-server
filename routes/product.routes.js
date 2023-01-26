@@ -6,9 +6,9 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
  
 //  POST /api/products  -  Creates a new product
 router.post('/', isAuthenticated, (req, res, next) => {
-  const { name, description, img, price, category } = req.body;
+  const { name, description, img, price, category,user } = req.body;
  
-  Product.create({ name, description, img, price, category })
+  Product.create({ name, description, img, price, category,user })
     .then(response => res.json(response))
     .catch(err => res.status(200).json(err));
 });
@@ -29,8 +29,11 @@ router.get('/:productId', (req, res, next) => {
       return;
     }
    
-    Product.findById(productId)
-      .then(product => res.status(200).json(product))
+    Product.findById(productId).populate("user")
+      .then(product => res.status(200).json(product)
+      
+      
+      )
       .catch(error => res.status(200).json(error));
 });
 
