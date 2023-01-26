@@ -5,10 +5,25 @@ const Product = require('../models/Product.model');
 const User = require('../models/User.model');
 const Order = require('../models/Order.model');
 
+// GET /api/orders - Form for a new order, get product details...
+router.get('/:productId', (req, res, next) => {
+  const { productId } = req.params;
+  //const { user, products, notes, status, orderDate } = req.body;
+  let data = {};
+  
+  Product.findById({_id: productId})
+    .then((product) => {
+      //console.log(data);
+      data.product = product;
+      //console.log(product.name);
+      res.status(200).json(product)
+    })
+    .catch(err => res.status(200).json(err));
+});
+
 // POST /api/orders - Creates a new order
 router.post('/', (req, res, next) => {
   const { user, products, notes, status, orderDate } = req.body;
-  //const userId = req.session.currentUser;
  
   Order.create({ user, products, notes, status, orderDate })
     .then(response => res.json(response))
@@ -17,7 +32,7 @@ router.post('/', (req, res, next) => {
 
 // GET /api/orders - Retrieves all of the orders (has to be Admin! *** to implement ***)
 router.get('/', (req, res, next) => {
-    Order.find()
+    Order.find().sort({orderDate:-1})
       .populate('products')
       .then(allOrders => res.json(allOrders))
       .catch(err => res.status(200).json(err));
