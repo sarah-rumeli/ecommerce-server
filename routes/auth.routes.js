@@ -65,10 +65,10 @@ router.post("/signup", (req, res, next) => {
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
       // We should never expose passwords publicly
-      const { email, name, _id, address } = createdUser;
+      const { email, name, _id, address,isAdmin } = createdUser;
 
       // Create a new object that doesn't expose the password
-      const user = { email, name, _id, address };
+      const user = { email, name, _id, address,isAdmin };
 
       // Send a json response containing the user object
       res.status(201).json({ user: user });
@@ -100,10 +100,10 @@ router.post("/login", (req, res, next) => {
 
       if (passwordCorrect) {
         // Deconstruct the user object to omit the password
-        const { _id, email, name, address } = foundUser;
+        const { _id, email, name, address,isAdmin } = foundUser;
 
         // Create an object that will be set as the token payload
-        const payload = { _id, email, name, address };
+        const payload = { _id, email, name, address,isAdmin };
 
         // Create a JSON Web Token and sign it
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
@@ -151,10 +151,10 @@ router.put("/profile/:profileId", (req, res, next) => {
   console.log("Profile ID......", profileId);
   User.findByIdAndUpdate(profileId, req.body, { new: true })
     .then((updatedProfile) => {
-      const { _id, email, name, address } = updatedProfile;
+      const { _id, email, name, address,isAdmin } = updatedProfile;
 
       // Create an object that will be set as the token payload
-      const payload = { _id, email, name, address };
+      const payload = { _id, email, name, address,isAdmin };
 
       // Create a JSON Web Token and sign it
       const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {

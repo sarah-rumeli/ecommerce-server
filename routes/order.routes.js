@@ -23,9 +23,9 @@ router.get('/:productId', (req, res, next) => {
 
 // POST /api/orders - Creates a new order
 router.post('/', (req, res, next) => {
-  const { userId, products, totalPrice, notes, status, orderDate } = req.body;
-  //console.log(req.body);
-  Order.create({ userId, products, totalPrice, notes, status, orderDate })
+  const { userId, products, totalPrice, notes, status } = req.body;
+  console.log(req.body);
+  Order.create({userId, products, totalPrice, notes, status})
     .then(response => res.status(200).json(response))
     .catch(error => res.status(500).json(error));
 });
@@ -33,7 +33,7 @@ router.post('/', (req, res, next) => {
 // GET /api/orders - Retrieves all of the orders (has to be Admin! *** to implement ***)
 router.get('/', (req, res, next) => {
     Order.find().sort({orderDate:-1})
-      .populate('products')
+      .populate('userId')
       .then(allOrders => res.status(200).json(allOrders))
       .catch(error => res.status(500).json(error));
 });
