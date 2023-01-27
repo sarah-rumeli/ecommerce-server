@@ -6,7 +6,7 @@ const User = require('../models/User.model');
 const Order = require('../models/Order.model');
 
 // GET /api/orders - Form for a new order, get product details...
-router.get('/:productId', (req, res, next) => {
+/*router.get('/:productId', (req, res, next) => {
   const { productId } = req.params;
   //const { user, products, notes, status, orderDate } = req.body;
   let data = {};
@@ -19,7 +19,7 @@ router.get('/:productId', (req, res, next) => {
       res.status(200).json(product)
     })
     .catch(error => res.status(500).json(error));
-});
+});*/
 
 // POST /api/orders - Creates a new order
 router.post('/', (req, res, next) => {
@@ -41,9 +41,11 @@ router.get('/', (req, res, next) => {
 //  GET /api/orders/:orderId -  Retrieves a specific order by id
 // *** Only show orders that that USER created
 // *** Admin can view any order by id
-router.get('/:orderId', (req, res, next) => {
-    const { orderId } = req.params;
-   
+router.get('/:orderId',(req, res, next) => {
+    const {orderId} = req.params;
+    console.log(
+      "order is",orderId
+    );
     if (!mongoose.Types.ObjectId.isValid(orderId)) {
       res.status(400).json({ message: 'Specified id is not valid' });
       return;
@@ -51,9 +53,14 @@ router.get('/:orderId', (req, res, next) => {
    
     // Each Order document has a `product` array holding `_id`s of Products
     // We use .populate() method to get swap the `_id`s for the actual Products
-    Order.findById(orderId)
-      .populate('products')
-      .then(order => res.status(200).json(order))
+    Order.findById(orderId).populate("userId")
+     
+      .then((order) => {
+        console.log(
+          "order is",order
+        );
+        res.status(200).json(order)
+      })
       .catch(error => res.status(500).json(error));
 });
 

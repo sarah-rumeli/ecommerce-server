@@ -19,7 +19,7 @@ const orderSchema = new Schema(
       },
       status: {
         type: String,
-        enum: ['inCart','unPaid', 'receivedPayment', 'dispatched', 'delivered']
+        enum: ['Awaiting Payment', 'Received Payment', 'Dispatched', 'Delivered']
       },
       dispatchDate: {type: Date,
         default: function () {
