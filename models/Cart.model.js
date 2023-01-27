@@ -4,14 +4,14 @@ const cartSchema = new Schema(
     {
       user: { type: Schema.Types.ObjectId, ref: 'User' },
       products: [{ 
-        productId: {type: Schema.Types.ObjectId, ref: 'Product'},
+        _id: {type: Schema.Types.ObjectId, ref: 'Product'},
         name: String,
         quantity: {
           type: Number,
-          required: true,
-          min: [1, 'Quantity can not be less than 1.'],
-          default: 1
-        }
+          default: 1,
+          min: [1, 'Quantity can not be less than 1.']
+        },
+        price: Number
        }],
        total: {type: Number, required: true, default: 0}
     },
