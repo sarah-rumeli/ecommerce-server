@@ -2,16 +2,16 @@ const { Schema, model } = require("mongoose");
 
 const cartSchema = new Schema(
     {
-      user: { type: Schema.Types.ObjectId, ref: 'User' },
+      user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
       products: [{ 
-        _id: {type: Schema.Types.ObjectId, ref: 'Product'},
+        _id: {type: Schema.Types.ObjectId, ref: 'Product', required: true},
         name: String,
         quantity: {
           type: Number,
           default: 1,
           min: [1, 'Quantity can not be less than 1.']
         },
-        price: Number
+        price: { type: Number, required: true }
        }],
        total: {type: Number, required: true, default: 0}
     },

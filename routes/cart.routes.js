@@ -21,51 +21,74 @@ router.get('/:userId', (req, res, next) => {
 });
  
 // POST /api/cart - Creates a new cart / updates users' cart
-router.post("/", async (req, res, next) => {
-  const { userId, productId, quantity } = req.body;
-  try {
-    let cart = await Cart.findOne({ userId });
-    let product = await Product.findOne({ _id: productId });
-    // check if product exists in DB
-    if (!product) {
-      res.status(404).send("Product not found!");
-    }
-    const price = product.price;
-    const name = product.name;
+router.post("/", (req, res, next) => {
+  const {user, product} = req.body;
+  console.log("user", user);
+  console.log("products", product);
 
-    if (cart) {
-      // if the user has a cart already
-      // check if the product is in the cart
-      //console.log("cart.products: ", cart.products);
-      let productIndex = cart.products.findIndex((p) => p._id == productId);
+  Cart.findOne({user: user})
+    .exec((error, cart) => {
+      if (error) return res.status(400).json({ error })
+      if (cart) {
+        // if cart exists update cart quantity
+        //console.log("user has a cart");
+        const productId = product._id;
+        const isProductInCart = cart.products.find(c => c._id == productId);
+        let condition, action;
 
-      // Check if product exists in the cart
-      // Product is already in cart, update quantity
-      if (productIndex > -1) {
-        let productItem = cart.products[productIndex];
-        productItem.quantity = productItem.quantity + +quantity;
-        cart.products[productIndex] = productItem;
-      // Product is not in the cart, add the product into products array
+        if (isProductInCart) {
+          //console.log("Product exists in cart");
+          condition = { "user": user, "products._id": productId };
+          action = {
+            "$set": {
+              "products.$": {
+                ...product,
+                quantity: isProductInCart.quantity + 1
+              }
+            }
+          };
+          // Product is already in the cart, update the quantity
+          Cart.findOneAndUpdate(condition, action)
+          .exec((error, _cart) => {
+            if (error) return res.status(401).json({ error });
+            if (_cart) {
+              return res.status(201).json({ cart: _cart});
+            }
+          })
+        } else {
+          // Product is NOT in the cart, add it
+          condition = { user: user };
+          action = {
+            "$push": {
+              "products": product
+            }
+          };
+          Cart.findOneAndUpdate(condition, action)
+          .exec((error, _cart) => {
+            if (error) return res.status(400).json({ error });
+            if (_cart) {
+              return res.status(201).json({ cart: _cart});
+            }
+          })
+          
+        }
+      
       } else {
-        cart.products.push({ _id: productId, name, quantity, price });
+        // if no cart, then create new one
+        //console.log("NO CART");
+        const cart = new Cart({
+          user: user,
+          products: [product]
+        });
+      
+        cart.save((error, cart) => {
+          if (error) return res.status(400).json({ error });
+          if (cart) {
+            return res.status(201).json({cart});
+          }
+        });
       }
-      cart.total += +quantity * price;
-      cart = await cart.save();
-      return res.status(201).send(cart);
-    } else {
-      // no cart exists, create one
-      Cart.create({
-        user: userId,
-        products: [{ _id: productId, name: name, quantity, price }],
-        total: quantity * price,
-      })
-      .then(response => res.status(201).json(response))
-      .catch(error => res.status(500).json(error))
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Something went wrong");
-  }
+    })
 });
 
 // DELETE /api/cart/:productId - Removes product from users' cart
