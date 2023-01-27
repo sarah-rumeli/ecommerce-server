@@ -26,7 +26,7 @@ router.post('/', (req, res, next) => {
   const { userId, products, totalPrice, notes, status } = req.body;
   console.log(req.body);
   Order.create({userId, products, totalPrice, notes, status})
-    .then(response => res.status(200).json(response))
+  .then(() => res.status(200).json({ message: `Order placed succcessfully. Thank you for shopping with us.` }))
     .catch(error => res.status(500).json(error));
 });
 
