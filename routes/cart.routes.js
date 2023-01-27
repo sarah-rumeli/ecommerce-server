@@ -22,7 +22,9 @@ router.get('/:userId', (req, res, next) => {
  
 // POST /api/cart - Creates a new cart / updates users' cart
 router.post("/", (req, res, next) => {
-  const {user, products} = req.body;
+  const {user, product} = req.body;
+  console.log("user", user);
+  console.log("products", product);
 
   Cart.findOne({user: user})
     .exec((error, cart) => {
@@ -30,7 +32,7 @@ router.post("/", (req, res, next) => {
       if (cart) {
         // if cart exists update cart quantity
         //console.log("user has a cart");
-        const productId = products._id;
+        const productId = product._id;
         const isProductInCart = cart.products.find(c => c._id == productId);
         let condition, action;
 
@@ -40,15 +42,15 @@ router.post("/", (req, res, next) => {
           action = {
             "$set": {
               "products.$": {
-                ...products,
-                quantity: isProductInCart.quantity + products.quantity
+                ...product,
+                quantity: isProductInCart.quantity + 1
               }
             }
           };
           // Product is already in the cart, update the quantity
           Cart.findOneAndUpdate(condition, action)
           .exec((error, _cart) => {
-            if (error) return res.status(400).json({ error });
+            if (error) return res.status(401).json({ error });
             if (_cart) {
               return res.status(201).json({ cart: _cart});
             }
@@ -58,7 +60,7 @@ router.post("/", (req, res, next) => {
           condition = { user: user };
           action = {
             "$push": {
-              "products": products
+              "products": product
             }
           };
           Cart.findOneAndUpdate(condition, action)
@@ -76,7 +78,7 @@ router.post("/", (req, res, next) => {
         //console.log("NO CART");
         const cart = new Cart({
           user: user,
-          products: [products]
+          products: [product]
         });
       
         cart.save((error, cart) => {
