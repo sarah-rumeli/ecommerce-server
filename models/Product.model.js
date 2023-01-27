@@ -1,5 +1,6 @@
 const { Schema, model } = require("mongoose");
 
+
 const productSchema = new Schema(
     {
       name: {
@@ -10,7 +11,10 @@ const productSchema = new Schema(
         type: String,
         required: [true, "A description is required."],
       },
-      img: String,
+      img:{
+        type:String,
+        required:false,
+      },
       price: {
         type: Number,
         required: [true, "Price is required."],
