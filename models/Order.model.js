@@ -2,9 +2,9 @@ const { Schema, model } = require("mongoose");
 
 const orderSchema = new Schema(
     {
-      user: { type: Schema.Types.ObjectId, ref: 'User' },
+      userId: { type: Schema.Types.ObjectId, ref: 'User' },
       products: [{ 
-        _id: {type: Schema.Types.ObjectId, ref: 'Product'},
+        productId: {type: Schema.Types.ObjectId, ref: 'Product'},
         name: String,
         quantity: {
           type: Number,
@@ -19,9 +19,14 @@ const orderSchema = new Schema(
       },
       status: {
         type: String,
-        enum: ['unPaid', 'receivedPayment', 'dispatched', 'delivered']
+        enum: ['inCart','unPaid', 'receivedPayment', 'dispatched', 'delivered']
       },
-      dispatchDate: Date,
+      dispatchDate: {type: Date,
+        default: function () {
+          let currentDate = new Date();
+          currentDate.setDate(currentDate.getDate() + 2);
+          return currentDate;
+      }},
     },
     {
       // this second object adds extra properties: `createdAt` and `updatedAt`
