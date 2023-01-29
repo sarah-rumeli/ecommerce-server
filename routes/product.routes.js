@@ -10,7 +10,8 @@ router.post("/upload", fileUploader.single("img"), (req, res, next) => {
    console.log("file is: ", req.file);
  
   if (!req.file) {
-    next(new Error("No file uploaded!"));
+    //next(new Error("No file uploaded!"));
+    res.json({ fileUrl: "https://res.cloudinary.com/dq4j6xfee/image/upload/v1675008769/ecommerce/green-earth-22033_nnkjx4.jpg" });
     return;
   }
   

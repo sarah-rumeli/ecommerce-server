@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const Product = require('../models/Product.model');
 const User = require('../models/User.model');
 const Order = require('../models/Order.model');
+const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 // GET /api/orders - Form for a new order, get product details...
 /*router.get('/:productId', (req, res, next) => {
@@ -22,7 +23,7 @@ const Order = require('../models/Order.model');
 });*/
 
 // POST /api/orders - Creates a new order
-router.post('/', (req, res, next) => {
+router.post('/', isAuthenticated, (req, res, next) => {
   const { userId, products, totalPrice, notes, status } = req.body;
   console.log(req.body);
   Order.create({userId, products, totalPrice, notes, status})
@@ -31,7 +32,7 @@ router.post('/', (req, res, next) => {
 });
 
 // GET /api/orders - Retrieves all of the orders (has to be Admin! *** to implement ***)
-router.get('/', (req, res, next) => {
+router.get('/',isAuthenticated, (req, res, next) => {
     Order.find().sort({orderDate:-1})
       .populate('userId')
       .then(allOrders => res.status(200).json(allOrders))
@@ -41,7 +42,7 @@ router.get('/', (req, res, next) => {
 //  GET /api/orders/:orderId -  Retrieves a specific order by id
 // *** Only show orders that that USER created
 // *** Admin can view any order by id
-router.get('/:orderId',(req, res, next) => {
+router.get('/:orderId',isAuthenticated,(req, res, next) => {
     const {orderId} = req.params;
     console.log(
       "order is",orderId
@@ -67,7 +68,7 @@ router.get('/:orderId',(req, res, next) => {
 // PUT  /api/orders/:orderId - Updates a specific order by id
 // *** Only update orders that that USER created
 // *** Admin can update any order
-router.put('/:orderId', (req, res, next) => {
+router.put('/:orderId',isAuthenticated, (req, res, next) => {
     const { orderId } = req.params;
    
     if (!mongoose.Types.ObjectId.isValid(orderId)) {
@@ -82,7 +83,7 @@ router.put('/:orderId', (req, res, next) => {
 
 // DELETE  /api/orders/:orderId - Deletes a specific Order by id
 // *** Only Admin can delete orders
-router.delete('/:orderId', (req, res, next) => {
+router.delete('/:orderId', isAuthenticated,(req, res, next) => {
     const { orderId } = req.params;
     
     if (!mongoose.Types.ObjectId.isValid(orderId)) {
