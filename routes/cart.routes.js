@@ -2,24 +2,26 @@ const router = require("express").Router();
 const mongoose = require('mongoose');
  
 const Cart = require('../models/Cart.model');
-const User = require('../models/User.model');
-const Product = require('../models/Product.model');
+const { isAuthenticated } = require("../middleware/jwt.middleware");
 
-// GET /api/cart/:userId - View cart details of user
-router.get('/:userId', (req, res, next) => {
+// GET /api/cart - View cart details of user
+router.get('/:user', isAuthenticated, (req, res, next) => {
   const { user } = req.params;
-
-  Cart.findOne({user})
+  console.log("SERVER user: ", user);
+  Cart.find({ user: user })
     .then((cart) => {
-      if (cart && cart.products.length > 0) {
+      if (cart) {
         res.status(200).json(cart);
       } else {
-        res.status(200).json(null);
+        res.status(200).json([]);
       }
     })
-    .catch(error => res.status(500).json(error))
+    .catch(error => {
+      console.log("Can't get all cart info???");
+      res.status(500).json(error)
+    });
 });
- 
+
 // POST /api/cart - Creates a new cart / updates users' cart
 router.post("/", (req, res, next) => {
   const {user, product} = req.body;
@@ -50,7 +52,7 @@ router.post("/", (req, res, next) => {
           // Product is already in the cart, update the quantity
           Cart.findOneAndUpdate(condition, action)
           .exec((error, _cart) => {
-            if (error) return res.status(401).json({ error });
+            if (error) return res.status(400).json({ error });
             if (_cart) {
               return res.status(201).json({ cart: _cart});
             }
