@@ -8,7 +8,7 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 router.get('/:user', isAuthenticated, (req, res, next) => {
   const { user } = req.params;
   console.log("SERVER user: ", user);
-  Cart.find({ user: user })
+  Cart.findOne({ user: user })
     .then((cart) => {
       if (cart) {
         res.status(200).json(cart);
@@ -17,7 +17,7 @@ router.get('/:user', isAuthenticated, (req, res, next) => {
       }
     })
     .catch(error => {
-      console.log("Can't get all cart info???");
+      console.log("Error..");
       res.status(500).json(error)
     });
 });
@@ -94,6 +94,7 @@ router.post("/", (req, res, next) => {
 });
 
 // DELETE /api/cart/:productId - Removes product from users' cart
+
 router.delete('/:productId', (req, res, next) => {
   const { productId } = req.params;
   const { userId } = req.body;
@@ -116,5 +117,8 @@ router.delete('/:productId', (req, res, next) => {
       })
       .catch(error => res.status(200).json(error));
 });
+
+// new route delete all from cart where user id = user id
+
  
 module.exports = router;
