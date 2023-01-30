@@ -8,7 +8,7 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 router.get('/:user', isAuthenticated, (req, res, next) => {
   const { user } = req.params;
   console.log("SERVER user: ", user);
-  Cart.findOne({ user: user })
+  Cart.find({ user: user })
     .then((cart) => {
       if (cart) {
         res.status(200).json(cart);
@@ -17,7 +17,7 @@ router.get('/:user', isAuthenticated, (req, res, next) => {
       }
     })
     .catch(error => {
-      console.log("Error..");
+      console.log("Error...");
       res.status(500).json(error)
     });
 });
