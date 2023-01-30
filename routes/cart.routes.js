@@ -17,7 +17,7 @@ router.get('/:user', isAuthenticated, (req, res, next) => {
       }
     })
     .catch(error => {
-      console.log("Can't get all cart info???");
+      console.log("Error...");
       res.status(500).json(error)
     });
 });
@@ -95,6 +95,7 @@ router.post("/", (req, res, next) => {
 });
 
 // DELETE /api/cart/:productId - Removes product from users' cart
+
 router.delete('/:productId', (req, res, next) => {
   const { productId } = req.params;
   const { userId } = req.body;
