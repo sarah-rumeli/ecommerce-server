@@ -5,10 +5,28 @@ const Product = require('../models/Product.model');
 const Comment = require('../models/Comment.model')
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
+//GET /api/products/:productId/comments - Display all comments for a product
+
+router.get('/:productId/comments',(req,res,next) =>{
+  const {productId} = req.params;
+  console.log("productId is",productId);
+  Comment.find({product:productId}).populate("userId").sort({createdAt:-1})
+  .then(response =>{
+    console.log(response)
+    res.json(response)
+  })
+  .catch(err => res.status(200).json(err))
+})
+
+
+
+
+
+
 //  POST /api/products/:productId/comments  -  Creates a new comment
 router.post('/:productId/comments', (req, res, next) => {
-  const { comment, rating, userId } = req.body;
-  const product = req.params;
+  const { comment,product, rating, userId } = req.body;
+  
  
   Comment.create({comment,rating,product:product,userId})
     .then(response => res.json(response))

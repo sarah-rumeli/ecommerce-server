@@ -33,7 +33,7 @@ router.post('/', isAuthenticated, (req, res, next) => {
 
 // GET /api/orders - Retrieves all of the orders (has to be Admin! *** to implement ***)
 router.get('/',isAuthenticated, (req, res, next) => {
-    Order.find().sort({orderDate:-1})
+    Order.find().sort({createdAt:-1})
       .populate('userId')
       .then(allOrders => res.status(200).json(allOrders))
       .catch(error => res.status(500).json(error));
