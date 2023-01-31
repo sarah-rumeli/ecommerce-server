@@ -101,18 +101,22 @@ router.post("/", (req, res, next) => {
 
 router.delete('/:productId', (req, res, next) => {
   const { productId } = req.params;
-  const { userId } = req.body;
-    
+  const { user } = req.body;
+    console.log('productId: ', productId);
+    console.log('user: ', user);
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       res.status(400).json({ message: 'Specified id is not valid' });
       return;
     }
    
-    Cart.findOne({user: userId})
+    Cart.findOne({user: user})
       .then((cart) => {
+        console.log('Cart.findOne(user)');
         let productIndex = cart.products.findIndex(p => p._id == productId);
+        console.log('productIndex: ', productIndex);
         if (productIndex > -1) {
             let productItem = cart.products[productIndex];
+            console.log('productItem: ', productItem);
             cart.total -= productItem.quantity*productItem.price;
             cart.products.splice(productIndex,1);
         }
