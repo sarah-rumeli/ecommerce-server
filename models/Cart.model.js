@@ -11,7 +11,8 @@ const cartSchema = new Schema(
           default: 1,
           min: [1, 'Quantity can not be less than 1.']
         },
-        price: { type: Number, required: true }
+        price: { type: Number, required: true },
+        img: String
        }],
        total: {type: Number, required: true, default: 0}
     },
