@@ -7,10 +7,10 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 //  POST /api/products/:productId/comments  -  Creates a new comment
 router.post('/:productId/comments', (req, res, next) => {
-  const { comment, rating, user } = req.body;
-  const {product} = req.params;
+  const { comment, rating, userId } = req.body;
+  const product = req.params;
  
-  Comment.create({ comment,rating,product,user })
+  Comment.create({comment,rating,product:product,userId})
     .then(response => res.json(response))
     .catch(err => res.status(200).json(err));
 });
