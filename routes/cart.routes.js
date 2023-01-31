@@ -33,13 +33,13 @@ router.post("/", (req, res, next) => {
       if (error) return res.status(400).json({ error })
       if (cart) {
         // if cart exists update cart quantity
-        //console.log("user has a cart");
+        console.log("user has a cart");
         const productId = product._id;
         const isProductInCart = cart.products.find(c => c._id == productId);
         let condition, action;
 
         if (isProductInCart) {
-          //console.log("Product exists in cart");
+          console.log("Product exists in cart");
           condition = { "user": user, "products._id": productId };
           action = {
             "$set": {
@@ -54,6 +54,7 @@ router.post("/", (req, res, next) => {
           .exec((error, _cart) => {
             if (error) return res.status(400).json({ error });
             if (_cart) {
+              console.log("product in cart, update quantity...");
               return res.status(201).json({ cart: _cart});
             }
           })
@@ -69,6 +70,7 @@ router.post("/", (req, res, next) => {
           .exec((error, _cart) => {
             if (error) return res.status(400).json({ error });
             if (_cart) {
+              console.log('product not in cart, add it');
               return res.status(201).json({ cart: _cart});
             }
           })
@@ -86,6 +88,7 @@ router.post("/", (req, res, next) => {
         cart.save((error, cart) => {
           if (error) return res.status(400).json({ error });
           if (cart) {
+            console.log('no user cart');
             return res.status(201).json({cart});
           }
         });
