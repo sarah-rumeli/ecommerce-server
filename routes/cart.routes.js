@@ -22,6 +22,7 @@ router.get('/:user', isAuthenticated, (req, res, next) => {
     });
 });
 
+
 // POST /api/cart - Creates a new cart / updates users' cart
 router.post("/", (req, res, next) => {
   const {user, product} = req.body;
@@ -121,7 +122,15 @@ router.delete('/:productId', (req, res, next) => {
       .catch(error => res.status(200).json(error));
 });
 
-// new route delete all from cart where user id = user id
+// DELETE /api/cart/remove/:userId - Removes Users' cart on checkout
+router.delete('/remove/:userId', (req, res, next) => {
+  const {userId}   = req.params;
+  
+    Cart.deleteOne({user: userId})
+      .then(() => res.json({ message: `Cart removed successfully.` }))
+      .catch(error => res.status(200).json(error));
+});
 
- 
+
+
 module.exports = router;

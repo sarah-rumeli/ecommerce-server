@@ -2,6 +2,7 @@ const router = require("express").Router();
 const mongoose = require('mongoose');
 const fileUploader = require("../config/cloudinary.config");
 const Product = require('../models/Product.model');
+const Comment = require('../models/Comment.model');
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 ///////////////// cloudinary image upload ///////////////////////// 
@@ -47,18 +48,15 @@ router.get('/', (req, res, next) => {
 //  GET /api/products/:productId -  Retrieves a specific product by id
 router.get('/:productId', (req, res, next) => {
     const { productId } = req.params;
-   
+    const commentArr = [];
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      res.status(400).json({ message: 'Specified id is not valid' });
+      res.status(400).json({ message: 'Specified id is not valid'});
       return;
     }
-   
     Product.findById(productId).populate("user")
-      .then(product => res.status(200).json(product)
-      
-      
-      )
-      .catch(error => res.status(200).json(error));
+      .then((products) => {
+      res.status(200).json(products);
+      })
 });
 
 // PUT  /api/products/:productId  -  Updates a specific product by id
