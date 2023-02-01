@@ -10,6 +10,15 @@ const jwt = require("jsonwebtoken");
 // Require the User model in order to interact with the database
 const User = require("../models/User.model");
 
+// Require the Product model in order to interact with the database
+const Product = require("../models/Product.model");
+
+// Require the Comment model in order to interact with the database
+const Comment = require("../models/Comment.model");
+
+// Require the Order model in order to interact with the database
+const Order = require("../models/Order.model");
+
 // Require necessary (isAuthenticated) middleware in order to control access to specific routes
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
@@ -169,6 +178,30 @@ router.put("/profile/:profileId", (req, res, next) => {
   
 });
 
+
+//Delete user profile - replace with Anonymous user 
+router.delete("/profile/:profileId", (req, res, next) => {
+  const { profileId } = req.params;
+ 
+  let anonUser;
+  User.findOne({name:"anonymous"}) // find "anonymous" user
+  .then((user) => {
+    anonUser = user;
+  }).then(() => {
+    return  Product.updateMany({user:profileId},{ $set: { user: anonUser._id } })
+  }).then(() => {
+    return  Order.updateMany({userId:profileId},{ $set: { userId: anonUser._id } })
+  }).then(() => {    
+    return Comment.updateMany({userId:profileId},{ $set: { userId: anonUser._id } })
+  }).then(()=> {
+    User.findByIdAndDelete(profileId)
+    .then(() => {
+      res.status(200).json({message: "Profile Deleted Successfully"});
+    })
+  }) 
+  .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
+  
+});
 
 
 // GET  /auth/verify  -  Used to verify JWT stored on the client

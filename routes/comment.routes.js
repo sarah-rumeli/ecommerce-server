@@ -13,7 +13,7 @@ router.get('/:productId/comments',(req,res,next) =>{
   console.log("productId is",productId);
   Comment.find({product:productId}).populate("userId").sort({createdAt:-1})
   .then(response =>{
-    console.log(response)
+    
     res.json(response)
   })
   .catch(err => res.status(200).json(err))
@@ -23,7 +23,7 @@ router.get('/:productId/comments',(req,res,next) =>{
 router.get('/:productId/comments/:commentId', (req, res, next) => {
  
   const {commentId} = req.params;
-  console.log("comment Id from client:",commentId);
+ 
      
   Comment.findById(commentId)
     .then((response) => {
