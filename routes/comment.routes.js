@@ -4,6 +4,7 @@ const fileUploader = require("../config/cloudinary.config");
 const Product = require('../models/Product.model');
 const Comment = require('../models/Comment.model')
 const { isAuthenticated } = require("../middleware/jwt.middleware");
+const { response } = require("../app");
 
 //GET /api/products/:productId/comments - Display all comments for a product
 
@@ -18,8 +19,18 @@ router.get('/:productId/comments',(req,res,next) =>{
   .catch(err => res.status(200).json(err))
 })
 
-
-
+// get one comment
+router.get('/:productId/comments/:commentId', (req, res, next) => {
+ 
+  const {commentId} = req.params;
+  console.log("comment Id from client:",commentId);
+     
+  Comment.findById(commentId)
+    .then((response) => {
+      //console.log(response.data)
+      res.json(response)})
+    .catch(error => res.status(200).json(error));
+});
 
 
 
@@ -36,14 +47,10 @@ router.post('/:productId/comments', (req, res, next) => {
 
 
 // PUT  /api/products/:productId/comments/:commentId  -  Updates a specific comment by id
-router.put('/:productId/comments/:commentId', (req, res, next) => {
-    const { product } = req.params.productId;
-    const {commentId} = req.params.commentId;
-   
-    if (!mongoose.Types.ObjectId.isValid(product)) {
-      res.status(400).json({ message: 'Specified id is not valid' });
-      return;
-    }
+router.put('/:productId/comments/:commentId/edit', (req, res, next) => {
+    
+    const {commentId} = req.params;
+  
    
     Comment.findByIdAndUpdate(commentId, req.body, { new: true })
       .then((updatedComment) => res.json(updatedComment))
@@ -52,14 +59,10 @@ router.put('/:productId/comments/:commentId', (req, res, next) => {
 
 // DELETE  /api/products/:productId/comments/:commentId  -  Deletes a specific comment by id
 router.delete('/:productId/comments/:commentId', (req, res, next) => {
-    const { product } = req.params.productId;
-    const {commentId} = req.params.commentId;
+    
+    const {commentId} = req.params;
        
-    if (!mongoose.Types.ObjectId.isValid(product)) {
-      res.status(400).json({ message: 'Specified id is not valid' });
-      return;
-    }
-   
+       
     Comment.findByIdAndRemove(commentId)
       .then(() => res.json({ message: `Comment with ${commentId} removed successfully.`}))
       .catch(error => res.status(200).json(error));
