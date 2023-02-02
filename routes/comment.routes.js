@@ -13,6 +13,26 @@ router.get('/:productId/comments',(req,res,next) =>{
   console.log("productId is",productId);
   Comment.find({product:productId}).populate("userId").sort({createdAt:-1})
   .then(response =>{
+    let productRating;
+    if(response.length===0){
+      productRating=0;
+    }
+    else{
+      productRating = Math.floor((response.reduce(
+        (accumulator, element) => accumulator + element.rating,
+        0
+      ))/response.length);
+    
+  
+      console.log(productRating);
+  
+      Product.findByIdAndUpdate(productId,{ $set: { rating: productRating} })
+      .then(() => {
+        console.log("Updated product rating");
+      })  
+
+    }
+   
     
     res.json(response)
   })
