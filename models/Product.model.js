@@ -21,7 +21,7 @@ const productSchema = new Schema(
       },
       category: {
         type: String,
-        enum: ['Cleaning', 'Organic Products', 'Reclaimed Textiles', 'Refurbished Electronics', 'Water Conservation', 'Eco Fertilizers'],
+        enum: ['Cleaning', 'Eco Fertilizers', 'Garden', 'Lifestyle', 'Organic Products', 'Outdoors', 'Portable Power', 'Reclaimed Textiles', 'Refurbished Electronics', 'Water Conservation'],
         required: [true, "Please select at least one category"],
       },
       user:{type: Schema.Types.ObjectId, ref: 'User'}
